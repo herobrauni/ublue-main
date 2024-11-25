@@ -34,6 +34,7 @@ jobs:
           - base
           - lazurite
           - vauxite
+          - cosmic
 
     steps:
       # Checkout push-to-registry action GitHub repository
@@ -45,6 +46,8 @@ jobs:
         run: |
           if [[ "${{ matrix.image_name }}" == "mate" ]]; then
               echo "SOURCE_IMAGE=base" >> $GITHUB_ENV
+          elif [[ "${{ matrix.image_name }}" == "cosmic" ]]; then
+              echo "SOURCE_IMAGE=cosmic-atomic" >> $GITHUB_ENV
           else
               echo "SOURCE_IMAGE=${{ matrix.image_name }}" >> $GITHUB_ENV
           fi
