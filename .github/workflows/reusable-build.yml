@@ -8,6 +8,8 @@ on:
         type: string
 env:
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  IMAGE_REGISTRY_UBLUE: ghcr.io/ublue-os
+
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}-${{ inputs.fedora_version }}
@@ -146,8 +148,8 @@ jobs:
               echo "inspected image version must not be empty or null"
               exit 1
             fi
-            linux=$(skopeo inspect docker://${{ env.IMAGE_REGISTRY }}/main-kernel:${{ matrix.fedora_version }} | jq -r '.Labels["ostree.linux"]')
-            AKMODS_KERNEL_VERSION=$(skopeo inspect docker://${{ env.IMAGE_REGISTRY }}/akmods:main-${{ matrix.fedora_version }} | jq -r '.Labels["ostree.linux"]')
+            linux=$(skopeo inspect docker://${{ env.IMAGE_REGISTRY_UBLUE }}/main-kernel:${{ matrix.fedora_version }} | jq -r '.Labels["ostree.linux"]')
+            AKMODS_KERNEL_VERSION=$(skopeo inspect docker://${{ env.IMAGE_REGISTRY_UBLUE }}/akmods:main-${{ matrix.fedora_version }} | jq -r '.Labels["ostree.linux"]')
             if [[ "${linux}" != "${AKMODS_KERNEL_VERSION}" ]]; then
               echo "Kernel Versions do not match between AKMODS and Cached-Kernel."
               exit 1
@@ -164,8 +166,8 @@ jobs:
             # pull the base image used for FROM in containerfile so
             # we can retry on that unfortunately common failure case
             podman pull quay.io/${{ env.SOURCE_ORG }}/${{ env.SOURCE_IMAGE }}:${{ matrix.fedora_version }}
-            podman pull ${{ env.IMAGE_REGISTRY }}/akmods:main-${{ matrix.fedora_version }}
-            podman pull ${{ env.IMAGE_REGISTRY }}/main-kernel:${{ env.KERNEL_VERSION }}
+            podman pull ${{ env.IMAGE_REGISTRY_UBLUE }}/akmods:main-${{ matrix.fedora_version }}
+            podman pull ${{ env.IMAGE_REGISTRY_UBLUE }}/main-kernel:${{ env.KERNEL_VERSION }}
 
       # Generate image metadata
       - name: Image Metadata
